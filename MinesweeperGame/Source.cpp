@@ -131,18 +131,24 @@ int GetDifficulty() {
 }
 
 int DisplayBoard() {
+	cout << "1 2 3 4 5 6 7 8 9";
 	for (int i = 0; i < diff; i++) {
+		cout << i << " ";
 		for (int j = 0; j < diff; j++) {
-			cout << board[i][j];
+			cout << board[i][j] << " ";
 		}
+		cout << endl;
 	}
 }
 
 int DisplayHiddenBoard() {
+	cout << "1 2 3 4 5 6 7 8 9";
 	for (int i = 0; i < diff; i++) {
+		cout << i << " ";
 		for (int j = 0; j < diff; j++) {
-			cout << hiddenBoard[i][j];
+			cout << hiddenBoard[i][j] << " ";
 		}
+		cout << endl;
 	}
 }
 
