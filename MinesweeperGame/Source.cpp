@@ -1,11 +1,12 @@
 // This project creates a minesweeper game with multiple difficulites 
 // Created by Matthew Moran
 
-// Packages
 #include <iostream>
 #include <string>
 #define MAXSIZE 15
 using namespace std;
+
+void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
 int diff;
 
@@ -146,7 +147,35 @@ int GetDifficulty() {
 	return 0;
 }
 
+void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	int row, col;
+	cout << "Make a move:";
+	cout << "Row: " << endl;
+	cin >> row;
+	cout << "Column: " << endl;
+	cin >> col;
+	MakeMove(row, col, board, hboard);
+}
 
+void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	if (IsValid(r, c, board, hboard) == true) {
+		board[r][c] = hboard[r][c];
+		ShowZeros(r, c, board, hboard);
+		DisplayBoard(board);
+		MovePrompt(board, hboard);
+	}
+	else {
+		string response = "";
+		cout << "You lost!" << endl;
+		DisplayBoard(hboard);
+		//cout << "Play again?" << endl;
+		//cin >> response;
+		//if (response == "Y" || response == "y" || response == "yes" || response == "Yes") {
+		//	CreateTable();
+		//}
+	}
+
+}
 
 void CreateTable() {
 	int startRow, startCol;
@@ -188,35 +217,6 @@ void CreateTable() {
 	MovePrompt(board, hiddenBoard);
 }
 
-void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	int row, col;
-	cout << "Make a move:";
-	cout << "Row: " << endl;
-	cin >> row;
-	cout << "Column: " << endl;
-	cin >> col;
-	MakeMove(row, col, board, hboard);
-}
-
-void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (IsValid(r, c, board, hboard) == true) {
-		board[r][c] = hboard[r][c];
-		ShowZeros(r, c, board, hboard);
-		DisplayBoard(board);
-		MovePrompt(board, hboard);
-	}
-	else {
-		string response = "";
-		cout << "You lost!" << endl;
-		DisplayBoard(hboard);
-		cout << "Play again?" << endl;
-		cin >> response;
-		if (response == "Y" || response == "y" || response == "yes" || response == "Yes") {
-			CreateTable();
-		}
-	}
-
-}
 
 int main() {
 	CreateTable();
