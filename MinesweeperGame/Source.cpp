@@ -150,9 +150,9 @@ int GetDifficulty() {
 void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	int row, col;
 	cout << "Make a move:";
-	cout << "Row: " << endl;
+	cout << "Row: ";
 	cin >> row;
-	cout << "Column: " << endl;
+	cout << "Column: ";
 	cin >> col;
 	MakeMove(row, col, board, hboard);
 }
@@ -181,11 +181,18 @@ void CreateTable() {
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
 	cout << "MINESWEEPER" << endl;
+	//still need to factor in the difficulty function
 	cout << "Select a starting position: " << endl;
-	cout << "Row: " << endl;
+	cout << "Row: ";
 	cin >> startRow;
-	cout << "Column: " << endl;
+	cout << "Column: ";
 	cin >> startCol;
+	for (int i = 0; i < diff; i++) {
+		for (int j = 0; j < diff; j++) {
+			board[i][j] = '-';
+		}
+	}
+	DisplayBoard(board);
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			
