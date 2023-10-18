@@ -173,7 +173,6 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 }
 
 
-
 int GetDifficulty() {
 	string diff = "";
 	cout << "Select Difficulty: \n (1) Easy \n (2) Medium \n (3) Hard \n (4) Exit";
@@ -231,6 +230,7 @@ void CreateTable() {
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
 	cout << "MINESWEEPER" << endl;
+	cout << "Moves are made by entering a row and a column in the table." << endl;
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			board[i][j] = '-';
@@ -243,6 +243,9 @@ void CreateTable() {
 	cin >> startRow;
 	cout << "Column: ";
 	cin >> startCol;
+	startRow = startRow - 1;
+	startCol = startCol - 1;
+	
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			
@@ -270,10 +273,9 @@ void CreateTable() {
 			}
 		}
 	}
-	board[startRow - 1][startCol - 1] = char(NumAdjMines(startRow, startCol, hiddenBoard) + 48);
-	ShowNeighbors(startRow-1, startCol-1, board, hiddenBoard);
+	board[startRow][startCol] = char(NumAdjMines(startRow, startCol, hiddenBoard) + 48);
+	ShowNeighbors(startRow, startCol, board, hiddenBoard);
 	DisplayBoard(board);
-	cout << "Moves are made by entering a row and a column in the table." << endl;
 	MovePrompt(board, hiddenBoard);
 }
 
