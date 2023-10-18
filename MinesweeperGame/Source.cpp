@@ -3,12 +3,15 @@
 
 #include <iostream>
 #include <string>
-#define MAXSIZE 15
+#define MAXSIZE 10
 using namespace std;
+
+//NOTE: once done, add protection so the user does not give invalid input
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
-int diff;
+//this is temporary
+int diff = 9;
 
 int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 	int count = 0;
@@ -93,32 +96,79 @@ bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MA
 
 }
 
-void ShowZeros(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	//if you make a valid click, the adj boxes with 0 adj mines should also be shown
-	//need to check all 8 cases
-	if (hboard[r - 1][c - 1] == '0') {
-		board[r - 1][c - 1] = '0';
+void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	//note: all instances with 8 are temporary and need to be changed so it can vary based on the grid size
+	if (r > 0 && c > 0) {
+		if (board[r - 1][c - 1] != '0') {
+			board[r - 1][c - 1] = hboard[r - 1][c - 1];
+			if (hboard[r - 1][c - 1] == '0') {
+				ShowNeighbors(r - 1, c - 1, board, hboard);
+			}
+		}
 	}
-	if (hboard[r-1][c] == '0') {
-		board[r-1][c] = '0';
+
+	if (r > 0) {
+		if (board[r - 1][c] != '0') {
+			board[r - 1][c] = hboard[r - 1][c];
+			if (hboard[r - 1][c] == '0') {
+				ShowNeighbors(r - 1, c, board, hboard);
+			}
+		}
 	}
-	if (hboard[r-1][c+1] == '0') {
-		board[r-1][c+1] = '0';
+
+	if (r > 0 && c < 8) {
+		if (board[r - 1][c + 1] != '0') {
+			board[r - 1][c + 1] = hboard[r - 1][c + 1];
+			if (hboard[r - 1][c + 1] == '0') {
+				ShowNeighbors(r - 1, c + 1, board, hboard);
+			}
+		}
+
 	}
-	if (hboard[r][c+1] == '0') {
-		board[r][c+1] = '0';
+	
+	if (c < 8) {
+		if (board[r][c + 1] != '0') {
+			board[r][c + 1] = hboard[r][c + 1];
+			if (hboard[r][c + 1] == '0') {
+				ShowNeighbors(r, c + 1, board, hboard);
+			}
+		}
 	}
-	if (hboard[r+1][c+1] == '0') {
-		board[r+1][c+1] = '0';
+
+	if (r < 8 && c < 8) {
+		if (board[r + 1][c + 1] != '0') {
+			board[r + 1][c + 1] = hboard[r + 1][c + 1];
+			if (hboard[r + 1][c + 1] == '0') {
+				ShowNeighbors(r + 1, c + 1, board, hboard);
+			}
+		}
 	}
-	if (hboard[r+1][c] == '0') {
-		board[r+1][c] = '0';
+
+	if (r < 8) {
+		if (board[r + 1][c] != '0') {
+			board[r + 1][c] = hboard[r + 1][c];
+			if (hboard[r + 1][c] == '0') {
+				ShowNeighbors(r + 1, c, board, hboard);
+			}
+		}
 	}
-	if (hboard[r+1][c-1] == '0') {
-		board[r+1][c-1] = '0';
+
+	if (r < 8 && c > 0) {
+		if (board[r + 1][c - 1] != '0') {
+			board[r + 1][c - 1] = hboard[r + 1][c - 1];
+			if (hboard[r + 1][c - 1] == '0') {
+				ShowNeighbors(r + 1, c - 1, board, hboard);
+			}
+		}
 	}
-	if (hboard[r][c-1] == '0') {
-		board[r][c-1] = '0';
+
+	if (c > 0) {
+		if (board[r][c - 1] != '0') {
+			board[r][c - 1] = hboard[r][c - 1];
+			if (hboard[r][c - 1] == '0') {
+				ShowNeighbors(r, c - 1, board, hboard);
+			}
+		}
 	}
 }
 
@@ -149,18 +199,18 @@ int GetDifficulty() {
 
 void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	int row, col;
-	cout << "Make a move:";
+	cout << "Make a move:" << endl;
 	cout << "Row: ";
 	cin >> row;
 	cout << "Column: ";
 	cin >> col;
-	MakeMove(row, col, board, hboard);
+	MakeMove(row-1, col-1, board, hboard);
 }
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (IsValid(r, c, board, hboard) == true) {
 		board[r][c] = hboard[r][c];
-		ShowZeros(r, c, board, hboard);
+		ShowNeighbors(r, c, board, hboard);
 		DisplayBoard(board);
 		MovePrompt(board, hboard);
 	}
@@ -181,18 +231,18 @@ void CreateTable() {
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
 	cout << "MINESWEEPER" << endl;
-	//still need to factor in the difficulty function
-	cout << "Select a starting position: " << endl;
-	cout << "Row: ";
-	cin >> startRow;
-	cout << "Column: ";
-	cin >> startCol;
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			board[i][j] = '-';
 		}
 	}
 	DisplayBoard(board);
+	//still need to factor in the difficulty function
+	cout << "Select a starting position: " << endl;
+	cout << "Row: ";
+	cin >> startRow;
+	cout << "Column: ";
+	cin >> startCol;
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			
@@ -210,15 +260,18 @@ void CreateTable() {
 				(i + 1 != startRow && j - 1 != startCol) &&
 				(i != startRow && j - 1 != startCol)) {
 				hiddenBoard[i][j] = '*';
-				board[i][j] = '*';
 			}
 		}
 	}
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
-			hiddenBoard[i][j] = char(NumAdjMines(i, j, hiddenBoard));
+			if (hiddenBoard[i][j] != '*') {
+				hiddenBoard[i][j] = char(NumAdjMines(i, j, hiddenBoard) + 48);
+			}
 		}
 	}
+	board[startRow - 1][startCol - 1] = char(NumAdjMines(startRow, startCol, hiddenBoard) + 48);
+	ShowNeighbors(startRow-1, startCol-1, board, hiddenBoard);
 	DisplayBoard(board);
 	cout << "Moves are made by entering a row and a column in the table." << endl;
 	MovePrompt(board, hiddenBoard);
