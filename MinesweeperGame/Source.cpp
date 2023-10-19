@@ -75,15 +75,26 @@ int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 
 
 void DisplayBoard(char board[MAXSIZE][MAXSIZE]) {
-	cout << "  ";
+	cout << "   ";
 	for (int i = 1; i <= diff; i++) {
-		cout << i << " ";
+		if (i < 10) {
+			cout << i << "  ";
+		}
+		else {
+			cout << i << " ";
+		}
+		
 	}
 	cout << endl;
 	for (int i = 0; i < diff; i++) {
-		cout << i + 1 << " ";
+		if (i+1 < 10) {
+			cout << i + 1 << "  ";
+		}
+		else {
+			cout << i + 1 << " ";
+		}
 		for (int j = 0; j < diff; j++) {
-			cout << board[i][j] << " ";
+			cout << board[i][j] << "  ";
 		}
 		cout << endl;
 	}
