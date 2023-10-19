@@ -86,7 +86,7 @@ void DisplayBoard(char board[MAXSIZE][MAXSIZE]) {
 }
 
 bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (NumAdjMines(r, c, hboard) == 0) {
+	if (hboard[r][c] != '*') {
 		return true;
 	}
 	else {
@@ -203,7 +203,9 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	cin >> row;
 	cout << "Column: ";
 	cin >> col;
-	MakeMove(row-1, col-1, board, hboard);
+	row = row - 1;
+	col = col - 1;
+	MakeMove(row, col, board, hboard);
 }
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
@@ -214,7 +216,6 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 		MovePrompt(board, hboard);
 	}
 	else {
-		string response = "";
 		cout << "You lost!" << endl;
 		DisplayBoard(hboard);
 		//cout << "Play again?" << endl;
