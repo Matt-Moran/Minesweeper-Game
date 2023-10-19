@@ -14,7 +14,7 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 int diff;
 
 bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (board[r][c] != '-' || r <= 0 || c <= 0 || r > diff || c > diff) {
+	if (board[r][c] != '-') {
 		return false;
 	}
 	return true;
@@ -273,7 +273,7 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 	}
 
 }
-
+//main function
 void CreateTable() {
 	//makes the randomization different each run
 	srand(time(0));
