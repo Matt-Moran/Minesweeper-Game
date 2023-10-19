@@ -3,16 +3,19 @@
 
 #include <iostream>
 #include <string>
-#define MAXSIZE 10
+
+#define MAXSIZE 15
 using namespace std;
 
 //NOTE: once done, add protection so the user does not give invalid input
 
+//maybe make a function CheckValidInput() that makes sure whatever a user inputs is valid
+//bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {}
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
-//this is temporary
-int diff = 9;
+int diff;
+
 
 int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 	int count = 0;
@@ -98,7 +101,6 @@ bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MA
 }
 
 void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	//note: all instances with 8 are temporary and need to be changed so it can vary based on the grid size
 	if (r > 0 && c > 0) {
 		if (board[r - 1][c - 1] != '0' && hboard[r - 1][c - 1] != '*') {
 			board[r - 1][c - 1] = hboard[r - 1][c - 1];
@@ -117,7 +119,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 	}
 
-	if (r > 0 && c < 8) {
+	if (r > 0 && c < diff-1) {
 		if (board[r - 1][c + 1] != '0' && hboard[r - 1][c + 1] != '*') {
 			board[r - 1][c + 1] = hboard[r - 1][c + 1];
 			if (hboard[r - 1][c + 1] == '0') {
@@ -127,7 +129,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 
 	}
 	
-	if (c < 8) {
+	if (c < diff - 1) {
 		if (board[r][c + 1] != '0' && hboard[r][c + 1] != '*') {
 			board[r][c + 1] = hboard[r][c + 1];
 			if (hboard[r][c + 1] == '0') {
@@ -136,7 +138,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 	}
 
-	if (r < 8 && c < 8) {
+	if (r < diff - 1 && c < diff - 1) {
 		if (board[r + 1][c + 1] != '0' && hboard[r + 1][c + 1] != '*') {
 			board[r + 1][c + 1] = hboard[r + 1][c + 1];
 			if (hboard[r + 1][c + 1] == '0') {
@@ -145,7 +147,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 	}
 
-	if (r < 8) {
+	if (r < diff - 1) {
 		if (board[r + 1][c] != '0' && hboard[r + 1][c] != '*') {
 			board[r + 1][c] = hboard[r + 1][c];
 			if (hboard[r + 1][c] == '0') {
@@ -154,7 +156,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 	}
 
-	if (r < 8 && c > 0) {
+	if (r < diff - 1 && c > 0) {
 		if (board[r + 1][c - 1] != '0' && hboard[r + 1][c - 1] != '*') {
 			board[r + 1][c - 1] = hboard[r + 1][c - 1];
 			if (hboard[r + 1][c - 1] == '0') {
@@ -174,27 +176,26 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 }
 
 
-int GetDifficulty() {
-	string diff = "";
-	cout << "Select Difficulty: \n (1) Easy \n (2) Medium \n (3) Hard \n (4) Exit";
-	cin >> diff;
-	if (diff == "1" || diff == "Easy" || diff == "easy") {
-		return 9;
+void GetDifficulty() {
+	string diffSelect = "";
+	cout << "Select Difficulty: \n (1) Easy \n (2) Medium \n (3) Hard \n (4) Exit\n";
+	cin >> diffSelect;
+	if (diffSelect == "1" || diffSelect == "Easy" || diffSelect == "easy") {
+		diff = 9;
 	}
-	else if (diff == "2" || diff == "Medium" || diff == "medium") {
-		return 12;
+	else if (diffSelect == "2" || diffSelect == "Medium" || diffSelect == "medium") {
+		diff = 12;
 	}
-	else if (diff == "3" || diff == "Hard" || diff == "hard") {
-		return 15;
+	else if (diffSelect == "3" || diffSelect == "Hard" || diffSelect == "hard") {
+		diff = 15;
 	}
-	else if (diff == "4" || diff == "Exit" || diff == "exit") {
+	else if (diffSelect == "4" || diffSelect == "Exit" || diffSelect == "exit") {
 		exit(0);
 	}
 	else {
 		cout << "Not valid input. Try again.";
 		GetDifficulty();
 	}
-	return 0;
 }
 
 void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
@@ -231,17 +232,18 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 }
 
 void CreateTable() {
+	srand(time(0));
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
 	cout << "MINESWEEPER" << endl;
 	cout << "Moves are made by entering a row and a column in the table." << endl;
+	GetDifficulty();
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			board[i][j] = '-';
 		}
 	}
 	DisplayBoard(board);
-	//still need to factor in the difficulty function
 	cout << "Select a starting position: " << endl;
 	cout << "Row: ";
 	cin >> startRow;
