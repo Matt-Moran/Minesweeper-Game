@@ -6,13 +6,16 @@
 #define MAXSIZE 15
 using namespace std;
 
+//POSSIBLE ADDITIONS:
 //make this into a class and make some functions public and private?
 //need to fix ShowNeighbors so it works when a 1-8 value is clicked and it has a 0 as a neighbor
+//add a play again?
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
 int diff;
 
+//make sure an input is not out of range or a spot that has already been selected
 bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (board[r][c] != '-') {
 		return false;
@@ -20,6 +23,7 @@ bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAX
 	return true;
 }
 
+//count the number of neighboring mines for a spot
 int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 	int count = 0;
 	/*
@@ -76,7 +80,7 @@ int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 	return count;
 }
 
-
+//print out board
 void DisplayBoard(char board[MAXSIZE][MAXSIZE]) {
 	cout << "   ";
 	for (int i = 1; i <= diff; i++) {
@@ -103,6 +107,7 @@ void DisplayBoard(char board[MAXSIZE][MAXSIZE]) {
 	}
 }
 
+//see if the board is completed (meaning the game is won)
 void CheckWin(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	bool same = true;
 	for (int i = 0; i < diff; i++) {
@@ -132,10 +137,9 @@ bool IsMine(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAX
 
 }
 
+//if a zero is shown, we want to show all of its neighbors
+//if a number is shown and it has a zero as its neighbor, we want to show it
 void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	//if a zero is shown, we want to show all of its neighbors
-	//if a number is shown and it has a zero as its neighbor, we want to show it
-
 	if (r > 0 && c > 0) {
 		if (board[r - 1][c - 1] != '0' && hboard[r - 1][c - 1] != '*') {
 			board[r - 1][c - 1] = hboard[r - 1][c - 1];
@@ -233,6 +237,7 @@ void GetDifficulty() {
 	}
 }
 
+//prompt for the user to input their move
 void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	int row, col;
 	cout << "Make a move:" << endl;
@@ -247,6 +252,7 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	MakeMove(row, col, board, hboard);
 }
 
+//makes the move and changes the board using the input from the user
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (IsMine(r, c, board, hboard) == true) {
 		if (CheckValidInput(r, c, board, hboard) == false) {
@@ -265,16 +271,13 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 		cout << "You lost!" << endl;
 		DisplayBoard(hboard);
 		exit(0);
-		//cout << "Play again?" << endl;
-		//cin >> response;
-		//if (response == "Y" || response == "y" || response == "yes" || response == "Yes") {
-		//	CreateTable();
-		//}
 	}
 
 }
+
 //main function
 void CreateTable() {
+
 	//makes the randomization different each run
 	srand(time(0));
 
