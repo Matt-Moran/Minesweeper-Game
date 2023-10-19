@@ -89,6 +89,24 @@ void DisplayBoard(char board[MAXSIZE][MAXSIZE]) {
 	}
 }
 
+void CheckWin(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	bool same = true;
+	for (int i = 0; i < diff; i++) {
+		for (int j = 0; j < diff; j++) {
+			if (hboard[i][j] != '*') {
+				if (board[i][j] != hboard[i][j]) {
+					same = false;
+				}
+			}
+		}
+	}
+	if (same == true) {
+		cout << "You win!" << endl;
+		DisplayBoard(board);
+		exit(0);
+	}
+}
+
 bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (hboard[r][c] != '*') {
 		return true;
@@ -213,6 +231,7 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (IsValid(r, c, board, hboard) == true) {
 		board[r][c] = hboard[r][c];
+		CheckWin(board, hboard);
 		if (board[r][c] == 0) {
 			ShowNeighbors(r, c, board, hboard);
 		}
