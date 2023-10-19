@@ -8,7 +8,6 @@ using namespace std;
 
 //NOTE: once done, add protection so the user does not give invalid input
 
-
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
 //this is temporary
