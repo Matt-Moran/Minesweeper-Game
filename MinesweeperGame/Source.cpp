@@ -3,14 +3,13 @@
 
 #include <iostream>
 #include <string>
-
 #define MAXSIZE 15
 using namespace std;
 
-//NOTE: once done, add protection so the user does not give invalid input
-
 //maybe make a function CheckValidInput() that makes sure whatever a user inputs is valid
 //bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {}
+//make this into a class and make some functions public and private
+//need to fix ShowNeighbors so it works when a 1-8 value is clicked and it has a 0 as a neighbor
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
@@ -234,6 +233,8 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	cin >> row;
 	cout << "Column: ";
 	cin >> col;
+
+	//rows and cols adjusted to reflect how to board is displayed
 	row = row - 1;
 	col = col - 1;
 	MakeMove(row, col, board, hboard);
@@ -262,12 +263,16 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 }
 
 void CreateTable() {
+	//makes the randomization different each run
 	srand(time(0));
+
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
 	cout << "MINESWEEPER" << endl;
 	cout << "Moves are made by entering a row and a column in the table." << endl;
 	GetDifficulty();
+
+	//make blank board
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			board[i][j] = '-';
@@ -281,13 +286,11 @@ void CreateTable() {
 	cin >> startCol;
 	startRow = startRow - 1;
 	startCol = startCol - 1;
-	
+
+	// place mines randomly
+	// the starting position should have no adj mines
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
-			
-			//place mines randomly
-			// the starting position should have no adj mines
-
 			if (rand() % 3 == 0 &&
 				(i != startRow && j != startCol) &&
 				(i - 1 != startRow && j - 1 != startCol) &&
@@ -302,6 +305,8 @@ void CreateTable() {
 			}
 		}
 	}
+
+	//+48 is used to adjust from ASCII values
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			if (hiddenBoard[i][j] != '*') {
