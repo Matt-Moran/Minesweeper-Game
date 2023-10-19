@@ -6,15 +6,19 @@
 #define MAXSIZE 15
 using namespace std;
 
-//maybe make a function CheckValidInput() that makes sure whatever a user inputs is valid
-//bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {}
-//make this into a class and make some functions public and private
+//make this into a class and make some functions public and private?
 //need to fix ShowNeighbors so it works when a 1-8 value is clicked and it has a 0 as a neighbor
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
 int diff;
 
+bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	if (board[r][c] != '-' || r <= 0 || c <= 0 || r > diff || c > diff) {
+		return false;
+	}
+	return true;
+}
 
 int NumAdjMines(int r, int c, char hboard[MAXSIZE][MAXSIZE]) {
 	int count = 0;
@@ -117,7 +121,7 @@ void CheckWin(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	}
 }
 
-bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+bool IsMine(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (hboard[r][c] != '*') {
 		return true;
 	}
@@ -129,6 +133,9 @@ bool IsValid(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MA
 }
 
 void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	//if a zero is shown, we want to show all of its neighbors
+	//if a number is shown and it has a zero as its neighbor, we want to show it
+
 	if (r > 0 && c > 0) {
 		if (board[r - 1][c - 1] != '0' && hboard[r - 1][c - 1] != '*') {
 			board[r - 1][c - 1] = hboard[r - 1][c - 1];
@@ -241,7 +248,11 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 }
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (IsValid(r, c, board, hboard) == true) {
+	if (IsMine(r, c, board, hboard) == true) {
+		if (CheckValidInput(r, c, board, hboard) == false) {
+			cout << "Not a valid input. Try again" << endl;
+			MovePrompt(board, hboard);
+		}
 		board[r][c] = hboard[r][c];
 		CheckWin(board, hboard);
 		if (board[r][c] == 0) {
@@ -253,6 +264,7 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 	else {
 		cout << "You lost!" << endl;
 		DisplayBoard(hboard);
+		exit(0);
 		//cout << "Play again?" << endl;
 		//cin >> response;
 		//if (response == "Y" || response == "y" || response == "yes" || response == "Yes") {
