@@ -7,9 +7,11 @@
 using namespace std;
 
 //POSSIBLE ADDITIONS:
-//make this into a class and make some functions public and private?
 //need to fix ShowNeighbors so it works when a 1-8 value is clicked and it has a 0 as a neighbor
 //add a play again?
+//add flags
+//error prevention for initial input
+//certain number of mines for each difficulty
 
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
@@ -128,14 +130,15 @@ void CheckWin(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 
 bool IsMine(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 	if (hboard[r][c] != '*') {
-		return true;
+		return false;
 	}
 	else {
-		return false;
+		return true;
 	}
 
 
 }
+
 
 //if a zero is shown, we want to show all of its neighbors
 //if a number is shown and it has a zero as its neighbor, we want to show it
@@ -158,7 +161,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 	}
 
-	if (r > 0 && c < diff-1) {
+	if (r > 0 && c < diff - 1) {
 		if (board[r - 1][c + 1] != '0' && hboard[r - 1][c + 1] != '*') {
 			board[r - 1][c + 1] = hboard[r - 1][c + 1];
 			if (hboard[r - 1][c + 1] == '0') {
@@ -167,7 +170,7 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 		}
 
 	}
-	
+
 	if (c < diff - 1) {
 		if (board[r][c + 1] != '0' && hboard[r][c + 1] != '*') {
 			board[r][c + 1] = hboard[r][c + 1];
@@ -254,23 +257,26 @@ void MovePrompt(char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
 
 //makes the move and changes the board using the input from the user
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (IsMine(r, c, board, hboard) == true) {
-		if (CheckValidInput(r, c, board, hboard) == false) {
-			cout << "Not a valid input. Try again" << endl;
-			MovePrompt(board, hboard);
-		}
-		board[r][c] = hboard[r][c];
-		CheckWin(board, hboard);
-		if (board[r][c] == 0) {
-			ShowNeighbors(r, c, board, hboard);
-		}
-		DisplayBoard(board);
+	
+	if (CheckValidInput(r, c, board, hboard) == false) {
+		cout << "Not a valid input. Try again" << endl;
 		MovePrompt(board, hboard);
 	}
 	else {
-		cout << "You lost!" << endl;
-		DisplayBoard(hboard);
-		exit(0);
+		if (IsMine(r, c, board, hboard) == false) {
+			board[r][c] = hboard[r][c];
+			CheckWin(board, hboard);
+			if (board[r][c] == '0') {
+				ShowNeighbors(r, c, board, hboard);
+			}
+			DisplayBoard(board);
+			MovePrompt(board, hboard);
+		}
+		else {
+			cout << "You lost!" << endl;
+			DisplayBoard(hboard);
+			exit(0);
+		}
 	}
 
 }
@@ -294,6 +300,7 @@ void CreateTable() {
 		}
 	}
 	DisplayBoard(board);
+
 	cout << "Select a starting position: " << endl;
 	cout << "Row: ";
 	cin >> startRow;
@@ -301,6 +308,7 @@ void CreateTable() {
 	cin >> startCol;
 	startRow = startRow - 1;
 	startCol = startCol - 1;
+
 
 	// place mines randomly
 	// the starting position should have no adj mines
