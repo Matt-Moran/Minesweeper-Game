@@ -7,7 +7,6 @@
 using namespace std;
 
 //POSSIBLE ADDITIONS:
-//need to fix ShowNeighbors so it works when a 1-8 value is clicked and it has a 0 as a neighbor
 //add a play again?
 //add flags
 //error prevention for initial input
@@ -143,75 +142,28 @@ bool IsMine(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAX
 //if a zero is shown, we want to show all of its neighbors
 //if a number is shown and it has a zero as its neighbor, we want to show it
 void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
-	if (r > 0 && c > 0) {
-		if (board[r - 1][c - 1] != '0' && hboard[r - 1][c - 1] != '*') {
-			board[r - 1][c - 1] = hboard[r - 1][c - 1];
-			if (hboard[r - 1][c - 1] == '0') {
-				ShowNeighbors(r - 1, c - 1, board, hboard);
-			}
-		}
+	if (r < 0 || r >= diff || c < 0 || c >= diff) {
+		return;
 	}
 
-	if (r > 0) {
-		if (board[r - 1][c] != '0' && hboard[r - 1][c] != '*') {
-			board[r - 1][c] = hboard[r - 1][c];
-			if (hboard[r - 1][c] == '0') {
-				ShowNeighbors(r - 1, c, board, hboard);
-			}
-		}
+	if (board[r][c] != '-') {
+		// Cell has already been revealed, no need to continue.
+		return;
 	}
 
-	if (r > 0 && c < diff - 1) {
-		if (board[r - 1][c + 1] != '0' && hboard[r - 1][c + 1] != '*') {
-			board[r - 1][c + 1] = hboard[r - 1][c + 1];
-			if (hboard[r - 1][c + 1] == '0') {
-				ShowNeighbors(r - 1, c + 1, board, hboard);
-			}
-		}
+	// Reveal the current cell.
+	board[r][c] = hboard[r][c];
 
-	}
-
-	if (c < diff - 1) {
-		if (board[r][c + 1] != '0' && hboard[r][c + 1] != '*') {
-			board[r][c + 1] = hboard[r][c + 1];
-			if (hboard[r][c + 1] == '0') {
-				ShowNeighbors(r, c + 1, board, hboard);
-			}
-		}
-	}
-
-	if (r < diff - 1 && c < diff - 1) {
-		if (board[r + 1][c + 1] != '0' && hboard[r + 1][c + 1] != '*') {
-			board[r + 1][c + 1] = hboard[r + 1][c + 1];
-			if (hboard[r + 1][c + 1] == '0') {
-				ShowNeighbors(r + 1, c + 1, board, hboard);
-			}
-		}
-	}
-
-	if (r < diff - 1) {
-		if (board[r + 1][c] != '0' && hboard[r + 1][c] != '*') {
-			board[r + 1][c] = hboard[r + 1][c];
-			if (hboard[r + 1][c] == '0') {
-				ShowNeighbors(r + 1, c, board, hboard);
-			}
-		}
-	}
-
-	if (r < diff - 1 && c > 0) {
-		if (board[r + 1][c - 1] != '0' && hboard[r + 1][c - 1] != '*') {
-			board[r + 1][c - 1] = hboard[r + 1][c - 1];
-			if (hboard[r + 1][c - 1] == '0') {
-				ShowNeighbors(r + 1, c - 1, board, hboard);
-			}
-		}
-	}
-
-	if (c > 0) {
-		if (board[r][c - 1] != '0' && hboard[r][c - 1] != '*') {
-			board[r][c - 1] = hboard[r][c - 1];
-			if (hboard[r][c - 1] == '0') {
-				ShowNeighbors(r, c - 1, board, hboard);
+	// Check if the revealed cell has a value of '0'.
+	if (hboard[r][c] == '0') {
+		// Recursively reveal neighboring cells.
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				int newRow = r + i;
+				int newCol = c + j;
+				if (newRow >= 0 && newRow < diff && newCol >= 0 && newCol < diff) {
+					ShowNeighbors(newRow, newCol, board, hboard);
+				}
 			}
 		}
 	}
@@ -264,11 +216,8 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 	}
 	else {
 		if (IsMine(r, c, board, hboard) == false) {
-			board[r][c] = hboard[r][c];
+			ShowNeighbors(r, c, board, hboard);
 			CheckWin(board, hboard);
-			if (board[r][c] == '0') {
-				ShowNeighbors(r, c, board, hboard);
-			}
 			DisplayBoard(board);
 			MovePrompt(board, hboard);
 		}
@@ -337,7 +286,6 @@ void CreateTable() {
 			}
 		}
 	}
-	board[startRow][startCol] = char(NumAdjMines(startRow, startCol, hiddenBoard) + 48);
 	ShowNeighbors(startRow, startCol, board, hiddenBoard);
 	DisplayBoard(board);
 	MovePrompt(board, hiddenBoard);
