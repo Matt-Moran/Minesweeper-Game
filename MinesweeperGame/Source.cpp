@@ -15,6 +15,7 @@ using namespace std;
 void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]);
 
 int diff;
+int mines;
 
 //make sure an input is not out of range or a spot that has already been selected
 bool CheckValidInput(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
@@ -189,12 +190,15 @@ void GetDifficulty() {
 	cin >> diffSelect;
 	if (diffSelect == "1" || diffSelect == "Easy" || diffSelect == "easy") {
 		diff = 9;
+		mines = 15;
 	}
 	else if (diffSelect == "2" || diffSelect == "Medium" || diffSelect == "medium") {
 		diff = 12;
+		mines = 20;
 	}
 	else if (diffSelect == "3" || diffSelect == "Hard" || diffSelect == "hard") {
 		diff = 15;
+		mines = 25;
 	}
 	else if (diffSelect == "4" || diffSelect == "Exit" || diffSelect == "exit") {
 		exit(0);
@@ -243,11 +247,41 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 
 }
 
+//place mines in the empty hidden board
+void PlaceMines(int r, int c, int remMines, char hboard[MAXSIZE][MAXSIZE]) {
+	for (int i = 0; i < diff; i++) {
+		for (int j = 0; j < diff; j++) {
+			if (rand() % mines + 1 == 1 &&
+				(i != r && j != c) &&
+				(i - 1 != r && j - 1 != c) &&
+				(i - 1 != r && j != c) &&
+				(i - 1 != r && j + 1 != c) &&
+				(i != r && j + 1 != c) &&
+				(i + 1 != r && j + 1 != c) &&
+				(i + 1 != r && j != c) &&
+				(i + 1 != r && j - 1 != c) &&
+				(i != r && j - 1 != c) && 
+				hboard[i][j] != '*')
+			{
+				hboard[i][j] = '*';
+				remMines--;
+
+				//no more mines to place
+				if (remMines == 0) {
+					return;
+				}
+			}
+		}
+	}
+	//if we still have mines to place, run again
+	PlaceMines(r, c, remMines, hboard);
+}
+
 //main function
 void CreateTable() {
 
 	//makes the randomization different each run
-	//srand(time(0));
+	srand(time(0));
 
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
@@ -271,30 +305,13 @@ void CreateTable() {
 	startRow = startRow - 1;
 	startCol = startCol - 1;
 
+	PlaceMines(startRow, startCol, mines, hiddenBoard);
 
-	// place mines randomly
-	// the starting position should have no adj mines
-	for (int i = 0; i < diff; i++) {
-		for (int j = 0; j < diff; j++) {
-			if (rand() % 3 == 0 &&
-				(i != startRow && j != startCol) &&
-				(i - 1 != startRow && j - 1 != startCol) &&
-				(i - 1 != startRow && j != startCol) &&
-				(i - 1 != startRow && j + 1 != startCol) &&
-				(i != startRow && j + 1 != startCol) &&
-				(i + 1 != startRow && j + 1 != startCol) &&
-				(i + 1 != startRow && j != startCol) &&
-				(i + 1 != startRow && j - 1 != startCol) &&
-				(i != startRow && j - 1 != startCol)) {
-				hiddenBoard[i][j] = '*';
-			}
-		}
-	}
-
-	//+48 is used to adjust from ASCII values
+	//fill the hidden board with the Adjacent mines of each cell
 	for (int i = 0; i < diff; i++) {
 		for (int j = 0; j < diff; j++) {
 			if (hiddenBoard[i][j] != '*') {
+				//+48 is used to adjust from ASCII values
 				hiddenBoard[i][j] = char(NumAdjMines(i, j, hiddenBoard) + 48);
 			}
 		}
