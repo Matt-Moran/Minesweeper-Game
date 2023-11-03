@@ -167,6 +167,19 @@ void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSI
 			}
 		}
 	}
+	//if cell is not '0', check if there are any neighboring 0s
+	if (hboard[r][c] != '0') {
+		// Recursively reveal neighboring cells.
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				int newRow = r + i;
+				int newCol = c + j;
+				if (newRow >= 0 && newRow < diff && newCol >= 0 && newCol < diff && hboard[newRow][newCol] == '0') {
+					ShowNeighbors(newRow, newCol, board, hboard);
+				}
+			}
+		}
+	}
 }
 
 
@@ -234,7 +247,7 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 void CreateTable() {
 
 	//makes the randomization different each run
-	srand(time(0));
+	//srand(time(0));
 
 	int startRow, startCol;
 	char hiddenBoard[MAXSIZE][MAXSIZE], board[MAXSIZE][MAXSIZE];
