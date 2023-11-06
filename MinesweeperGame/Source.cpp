@@ -143,12 +143,13 @@ bool IsMine(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAX
 //if a zero is shown, we want to show all of its neighbors
 //if a number is shown and it has a zero as its neighbor, we want to show it
 void ShowNeighbors(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][MAXSIZE]) {
+	//make sure we are in the range of the board
 	if (r < 0 || r >= diff || c < 0 || c >= diff) {
 		return;
 	}
 
+	// Cell has already been revealed, no need to continue.
 	if (board[r][c] != '-') {
-		// Cell has already been revealed, no need to continue.
 		return;
 	}
 
@@ -233,7 +234,12 @@ void MakeMove(int r, int c, char board[MAXSIZE][MAXSIZE], char hboard[MAXSIZE][M
 	}
 	else {
 		if (IsMine(r, c, board, hboard) == false) {
-			ShowNeighbors(r, c, board, hboard);
+			if (hboard[r][c] == '0') {
+				ShowNeighbors(r, c, board, hboard);
+			}
+			else {
+				board[r][c] = hboard[r][c];
+			}
 			CheckWin(board, hboard);
 			DisplayBoard(board);
 			MovePrompt(board, hboard);
